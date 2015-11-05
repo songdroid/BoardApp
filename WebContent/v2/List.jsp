@@ -134,7 +134,10 @@
 </tr>
 <tr>
 	<td align="left">Go to Page 
-		<a href="List.jsp?nowBlock=<%=nowBlock-1%>&nowPage=<%=pagePerBlock*(nowBlock-1)%>">이전 <%=pagePerBlock %>개</a>&nbsp;&nbsp;&nbsp;
+		<%if(nowBlock > 0){ %>
+			<a href="List.jsp?nowBlock=<%=nowBlock-1%>&nowPage=<%=pagePerBlock*(nowBlock-1)%>">이전 <%=pagePerBlock %>개</a>&nbsp;&nbsp;&nbsp;
+		<%} %>
+		
 		<%
 			for(int i=0; i<pagePerBlock; i++){
 				if((nowBlock * pagePerBlock) + i == totalPage){
@@ -146,7 +149,9 @@
 			}
 		%>
 		&nbsp;&nbsp;&nbsp;
-		<a href="List.jsp?nowBlock=<%=nowBlock+1%>&nowPage=<%=pagePerBlock*(nowBlock+1)%>">다음<%=pagePerBlock %>개</a>
+		<%if(totalBlock > nowBlock+1){ %>
+			<a href="List.jsp?nowBlock=<%=nowBlock+1%>&nowPage=<%=pagePerBlock*(nowBlock+1)%>">다음<%=pagePerBlock %>개</a>
+		<%} %>
 	</td>
 	<td align=right>
 		<a href="Post.jsp">[글쓰기]</a>
