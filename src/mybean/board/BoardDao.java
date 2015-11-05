@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 public class BoardDao {
@@ -32,8 +33,16 @@ public class BoardDao {
 		if(con!=null){ try{ con.close(); }catch(Exception err){} }
 	}
 	
-	public List getBoardList(){
-		String sql = "select * from tblboard";
+	public List getBoardList(String keyField, String keyWord){
+		String sql = null;
+		if(keyWord == null || keyWord.equals("null") || keyWord.isEmpty()){
+			sql = "select * from tblboard order by b_num desc";
+		}
+		else{
+			sql = "select * from tblboard where " + keyField +
+				" like '%" + keyWord + "%' order by b_num desc";
+		}
+		
 		Vector vec = new Vector();
 		
 		try{
@@ -93,4 +102,101 @@ public class BoardDao {
 			freeCon();
 		}
 	}
+	
+	public void increaseCount(int b_num){
+		try{
+			con = ds.getConnection();
+			String sql = "update tblboard set b_count=b_count+1 where b_num=?";
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, b_num);
+			stmt.executeUpdate();
+		}
+		catch(Exception err){
+			System.out.println("increaseCount() : " + err);
+		}
+		finally{freeCon();}
+	}
+	
+	public BoardDto getBoard(int b_num){
+		String sql;
+		BoardDto result = new BoardDto();
+		
+		try{
+			con = ds.getConnection();
+			
+			sql = "select * from tblboard where b_num=?";
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, b_num);
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				result.setB_content(rs.getString("b_content"));
+				result.setB_count(rs.getInt("b_count"));
+				result.setB_email(rs.getString("b_email"));
+				result.setB_homepage(rs.getString("b_homepage"));
+				result.setB_ip(rs.getString("b_ip"));
+				result.setB_name(rs.getString("b_name"));
+				result.setB_num(rs.getInt("b_num"));
+				result.setB_pass(rs.getString("b_pass"));
+				result.setB_regdate(rs.getString("b_regdate"));
+				result.setB_subject(rs.getString("b_subject"));
+				result.setDepth(rs.getInt("depth"));
+				result.setPos(rs.getInt("pos"));
+			}
+		}
+		catch(Exception err){
+			System.out.println("getBoard() : " + err);
+		}
+		finally{
+			freeCon();
+		}
+		
+		return result;
+	}
+	
+	public void updateBoard(BoardDto dto){
+		String sql = "update tblboard set b_name=?, b_email=?, " +
+			"b_subject=?, b_content=? where b_num=?";
+		
+		try{
+			con = ds.getConnection();
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, dto.getB_name());
+			stmt.setString(2, dto.getB_email());
+			stmt.setString(3, dto.getB_subject());
+			stmt.setString(4, dto.getB_content());
+			stmt.setInt(5, dto.getB_num());
+			
+			stmt.executeUpdate();
+		}
+		catch(Exception err){
+			System.out.println("updateBoard() : " + err);
+		}
+		finally{ freeCon(); }
+	}
+	
+	public void deleteBoard(int b_num){
+		String sql = "delete from tblboard where b_num=?";
+			
+		try{
+			con = ds.getConnection();
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, b_num);
+			stmt.executeUpdate();
+		}
+		catch(Exception err){
+			System.out.println("deleteBoard() : " + err);
+		}
+		finally{ freeCon(); }
+	}
 }
+
+
+
+
+
+
+
+
+
+

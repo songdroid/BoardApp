@@ -11,6 +11,15 @@
 			return "";
 		}
 	}
+
+	int totalRecord = 0;
+	int numPerPage = 5;
+	int totalPage = 0;
+	int nowPage = 0;
+	int beginPerPage = 0;
+	int pagePerBlock = 3;
+	int totalBlock = 0;
+	int nowBlock = 0;
 %>
 
 <%
@@ -29,6 +38,23 @@
 			keyWord = "";
 		}
 	}
+	
+	Vector vec = (Vector)dao.getBoardList(keyField, keyWord);
+	
+	// 여기서부터 페이징 기능 추가
+	totalRecord = vec.size();
+	totalPage = (int)Math.ceil(((double)totalRecord/numPerPage));
+	
+	if(request.getParameter("nowPage") != null){
+		nowPage = Integer.parseInt(request.getParameter("nowPage"));
+	}
+	
+	if(request.getParameter("nowBlock") != null){
+		nowBlock = Integer.parseInt(request.getParameter("nowBlock"));
+	}
+	
+	beginPerPage = nowPage * numPerPage;
+	totalBlock = (int)Math.ceil(((double)totalPage/pagePerBlock));
 %>
 <HTML>
 <link href="style.css" rel="stylesheet" type="text/css">
@@ -58,8 +84,8 @@
 
 <table align=center border=0 width=80%>
 <tr>
-	<td align=left>Total :  Articles(
-		<font color=red>  1 / 10 Pages </font>)
+	<td align=left>Total :  <%=totalRecord%> Articles(
+		<font color=red>  <%=nowPage+1%> / <%=totalPage%> Pages </font>)
 	</td>
 </tr>
 </table>
@@ -76,15 +102,17 @@
 				<td> 조회수 </td>
 			</tr>
 		<%
-			Vector vec = (Vector)dao.getBoardList(keyField, keyWord);
-			
 			if(vec == null || vec.isEmpty()){
 		%>
 				<div style="color:red">등록된 글이 없습니다.</div>
 		<%	
 			}
 			else{
-				for(int i=0; i<vec.size(); i++){
+				for(int i=beginPerPage; i<beginPerPage+numPerPage; i++){
+					if(i == totalRecord){
+						break;
+					}
+					
 					BoardDto dto = (BoardDto)vec.get(i);
 		%>
 			<tr>
@@ -105,7 +133,21 @@
 	<td><BR><BR></td>
 </tr>
 <tr>
-	<td align="left">Go to Page </td>
+	<td align="left">Go to Page 
+		<a href="List.jsp?nowBlock=<%=nowBlock-1%>&nowPage=<%=pagePerBlock*(nowBlock-1)%>">이전 <%=pagePerBlock %>개</a>&nbsp;&nbsp;&nbsp;
+		<%
+			for(int i=0; i<pagePerBlock; i++){
+				if((nowBlock * pagePerBlock) + i == totalPage){
+					break;
+				}
+		%>
+				<a href="List.jsp?nowPage=<%=(nowBlock * pagePerBlock)+i%>&nowBlock=<%=nowBlock%>"><%=(nowBlock * pagePerBlock) + i+1%></a>&nbsp;&nbsp;&nbsp;
+		<%
+			}
+		%>
+		&nbsp;&nbsp;&nbsp;
+		<a href="List.jsp?nowBlock=<%=nowBlock+1%>&nowPage=<%=pagePerBlock*(nowBlock+1)%>">다음<%=pagePerBlock %>개</a>
+	</td>
 	<td align=right>
 		<a href="Post.jsp">[글쓰기]</a>
 		<a href="javascript:list()">[처음으로]</a>
