@@ -7,10 +7,8 @@
 	int b_num = Integer.parseInt(request.getParameter("b_num"));
 	String keyField = request.getParameter("keyField");
 	String keyWord = request.getParameter("keyWord");
-	
-	if(session.isNew()){
-		dao.increaseCount(b_num);
-	}
+
+	dao.increaseCount(b_num);
 	
 	BoardDto dto = dao.getBoard(b_num);
 	String b_name = dto.getB_name();
@@ -66,7 +64,8 @@
  <tr>
   <td align=center colspan=2> 
 	<hr size=1>
-	[ <a href="javascript:document.list.submit()">목 록</a> | 
+	[ <a href="javascript:document.list.submit()">목 록</a> |
+	<a href="Reply.jsp?b_num=<%=b_num%>">답 변</a> |
 	<a href="Update.jsp?b_num=<%=b_num%>">수 정</a> |
 	<a href="Delete.jsp?b_num=<%=b_num%>">삭 제</a> ]<br>
   </td>

@@ -36,11 +36,11 @@ public class BoardDao {
 	public List getBoardList(String keyField, String keyWord){
 		String sql = null;
 		if(keyWord == null || keyWord.equals("null") || keyWord.isEmpty()){
-			sql = "select * from tblboard order by b_num desc";
+			sql = "select * from tblboard order by pos";
 		}
 		else{
 			sql = "select * from tblboard where " + keyField +
-				" like '%" + keyWord + "%' order by b_num desc";
+				" like '%" + keyWord + "%' order by pos";
 		}
 		
 		Vector vec = new Vector();
@@ -77,6 +77,17 @@ public class BoardDao {
 		return vec;
 	}
 	
+	public void updatePos(Connection con){
+		try{
+			String sql = "update tblBoard set pos=pos+1";
+			stmt = con.prepareStatement(sql);
+			stmt.executeUpdate();
+		}
+		catch(Exception err){
+			System.out.println("updatePos() : " + err);
+		}
+	}
+	
 	public void insertBoard(BoardDto dto){
 		String sql = "insert into tblboard(b_num, b_name, b_email, " +
 			"b_homepage, b_subject, b_content, b_regdate, b_pass, " +
@@ -84,6 +95,7 @@ public class BoardDao {
 			"values(seq_b_num.nextVal, ?,?,?,?,?, sysdate,?,0,?,0,0)";
 		try{
 			con = ds.getConnection();
+			updatePos(con);
 			stmt = con.prepareStatement(sql);
 			stmt.setString(1, dto.getB_name());
 			stmt.setString(2, dto.getB_email());
@@ -188,6 +200,48 @@ public class BoardDao {
 			System.out.println("deleteBoard() : " + err);
 		}
 		finally{ freeCon(); }
+	}
+	
+	public void replyUpdatePos(BoardDto dto){
+		String sql = "update tblBoard set pos=pos+1 where pos>?";
+		
+		try{
+			con = ds.getConnection();
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, dto.getPos());
+			stmt.executeUpdate();
+		}
+		catch(Exception err){
+			System.out.println("replyUpdatePos() : " + err);
+		}
+		finally{ freeCon(); }
+	}
+	
+	public void replyBoard(BoardDto dto){
+		String sql = "insert into tblboard(b_num, b_name, b_email, " +
+				"b_homepage, b_subject, b_content, b_regdate, b_pass, " +
+				"b_count, b_ip, pos, depth) " +
+				"values(seq_b_num.nextVal, ?,?,?,?,?, sysdate,?,0,?,?,?)";
+		try{
+			con = ds.getConnection();
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, dto.getB_name());
+			stmt.setString(2, dto.getB_email());
+			stmt.setString(3, dto.getB_homepage());
+			stmt.setString(4, dto.getB_subject());
+			stmt.setString(5, dto.getB_content());
+			stmt.setString(6, dto.getB_pass());
+			stmt.setString(7, dto.getB_ip());
+			stmt.setInt(8, dto.getPos()+1);
+			stmt.setInt(9, dto.getDepth()+1);
+			stmt.executeUpdate();
+		}
+		catch(Exception err){
+			System.out.println("replyBoard() : " + err);
+		}
+		finally{
+			freeCon();
+		}
 	}
 }
 

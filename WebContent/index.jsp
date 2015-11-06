@@ -17,6 +17,7 @@
 <ol>
 	<li><a href="v1/List.jsp">첫번째 버전(빈을 사용)</a></li>
 	<li><a href="v2/List.jsp">두번째 버전(페이징 기능 추가)</a></li>
+	<li><a href="v3/List.jsp">세번째 버전(답변 기능 추가)</a></li>
 </ol>	
 
 </body>
