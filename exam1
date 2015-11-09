@@ -1,0 +1,39 @@
+<body>
+	<h3>jQuery란?</h3>
+	<div>
+		<b>jQuery</b>는 가볍고 빠르며, 간결한 오픈소스 라이브러리 
+		입니다. 이를 이용하면 Rich 웹 UI를 개발하는 데 도움이
+		되는 다양한 기능들 즉, <b>HTML 문서 트래버스</b>,
+		<b>이벤트 처리</b>, <b>애니메이션</b>, <b>ajax 상호작용</b>
+		등을 지원하여 빠르고 견고하게 리치 웹 어플리케이션 개발을
+		할 수 있도록 지원합니다.
+	</div>	
+	<br/>
+	<div>
+		이러한 <b>jQuery</b>의 기능적인 특징은 다음과 같습니다.
+	</div>
+	<br/>
+	<div>
+		<ul>
+			<li>막강한 css 셀렉터</li>
+			<li>크로스 브라우저 지원</li>
+			<li>메서드 체인</li>
+			<li>Ajax 지원</li>
+			<li>풍부한 플러그인 지원</li>
+		</ul>
+	</div>
+	<br/>
+	<table class="nameTable" border="1" cellpadding="3px">
+		<tr>
+			<td width="100px">이름</td>
+			<td width="100px">성별</td>
+			<td width="100px">기타 정보</td>
+		</tr>
+		<tr><td>홍길동</td><td>M</td><td></td></tr>
+		<tr><td>임꺽정</td><td>M</td><td>...</td></tr>
+		<tr><td>강감찬</td><td>M</td><td></td></tr>
+		<tr><td>유관순</td><td>F</td><td>...</td></tr>
+		<tr><td>신사임당</td><td>F</td><td>...</td></tr>
+		<tr><td>신돌석</td><td></td><td>...</td></tr>
+	</table>
+</body>
